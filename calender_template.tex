@@ -1,0 +1,37 @@
+\documentclass[border=4.9mm, multi={tikzpicture}]{standalone}
+%\usepackage[hmargin=2cm,bmargin=3cm,tmargin=4.5cm,centering,a4paper]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% MCAL -------------------------------
+\usepackage{mcal}
+% MCAL -------------------------------
+
+\begin{document}\estilodetexto% To set up \sffamily, \bfseries…
+\thisyear{2014}% The year the calendar is about.
+\colordelosfestivos{red}% The color of holidays.
+\remaincolor{white}% The color under the top rectangle (where the title and the previous and next calendar are)
+\resubcolor{white}% The color under the names of the week
+\mooncounter=2% To set the first moon of the year (0,1,2,3)
+% 
+% \begin{tikzpicture}[picture]
+% \node[inner sep=0] (title) at (0,0)
+%     {\includegraphics[width=\paperwidth,height=\paperheight]{dome_at_night.jpg}};
+% \end{tikzpicture}
+% \newpage
+\January[7,14,21,28]{7}% The months …
+\February[7,14,21,28]{1,2,3,7,9,25}
+\March[7,14,21,28]{1,2,3,7,9,25}
+\April[7,14,21,28]{1,2,3,7,9,25}
+\May[7,14,21,28]{1,2,3,7,9,25}
+\June[7,14,21,28]{1,2,3,7,9,25}
+\July[7,14,21,28]{1,2,3,7,9,25}
+\August[7,14,21,28]{1,2,3,7,9,25}
+\September[7,14,21,28]{1,2,3,7,9,25}
+\October[7,14,21,28]{1,2,3,7,9,25}
+\November[7,14,21,28]{1,2,3,7,9,25}
+\December[4,12,19,27]{6,8,25,31}
+\end{document}
