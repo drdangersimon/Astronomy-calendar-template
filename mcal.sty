@@ -1,11 +1,14 @@
 \RequirePackage{tikz}
-\usetikzlibrary{calc,calendar}
+\usetikzlibrary{calc, calendar}
 \RequirePackage{xcolor}
 
+%text style
 \def\estilodetexto{\sffamily\bfseries\LARGE}
 
 \pgfmathtruncatemacro{\Year}{2013}%
-\pgfmathtruncatemacro{\monthcounter}{12}% Diciembre
+\pgfmathtruncatemacro{\monthcounter}{1}% start at January
+\pgfmathtruncatemacro{\nextmonth}{2} %Febuary
+\pgfmathtruncatemacro{\lastmonth}{12} %December
 \pgfmathtruncatemacro{\oldYear}{\Year-1}%
 \pgfmathtruncatemacro{\newYear}{\Year+1}%
 \def\colorfestivos{red}
@@ -30,6 +33,8 @@
 \def\thisyear#1{%
 \let\Year\relax%
 \pgfmathtruncatemacro{\Year}{#1}%
+\pgfmathtruncatemacro{\oldYear}{#1-1}
+\pgfmathtruncatemacro{\newYear}{#1+1}
 }
 
 \RequirePackage{etoolbox}
@@ -40,6 +45,8 @@
     \foreach \f in {#1} {%
         \xappto\festivos{if (day of month = \f) [\colorfestivos]}}%
 }
+
+%astronomical events
 
 \newcount\mooncounter
 \def\moonreset{\global\mooncounter=-1\relax}
@@ -69,7 +76,7 @@
         \pgfmathsetlength{\pgf@ya}{\tikz@lib@cal@yshift}%
         \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
         \pgftransformyshift{-\pgf@ya}
-        \foreach \d/\l in {0/M,1/T,2/W,3/Th,4/F,5/S,6/S}{
+        \foreach \d/\l in {1/M,2/T,3/W,4/T,5/F,6/S,0/S}{
             \pgf@xa=\d\pgf@xa%
             \pgftransformxshift{\pgf@xa}%
             \pgftransformyshift{\pgf@ya}%
@@ -82,30 +89,30 @@
 
 \pagestyle{empty}
 
-\def\Month{%
-\ifnum\monthcounter=1%
+\def\Month#1{%
+\ifnum#1=1%
     January\else
-    \ifnum\monthcounter=2% 
+    \ifnum#1=2% 
         February\else
-        \ifnum\monthcounter=3% 
+        \ifnum#1=3% 
             March\else
-            \ifnum\monthcounter=4% 
+            \ifnum#1=4% 
                 April\else
-                \ifnum\monthcounter=5% 
+                \ifnum#1=5% 
                     May\else
-                    \ifnum\monthcounter=6% 
+                    \ifnum#1=6% 
                         June\else
-                        \ifnum\monthcounter=7% 
+                        \ifnum#1=7% 
                             July\else
-                            \ifnum\monthcounter=8% 
+                            \ifnum#1=8% 
                                 August\else
-                                \ifnum\monthcounter=9% 
+                                \ifnum#1=9% 
                                     September\else
-                                    \ifnum\monthcounter=10% 
+                                    \ifnum#1=10% 
                                         October\else
-                                        \ifnum\monthcounter=11% 
+                                        \ifnum#1=11% 
                                             November\else
-                                            \ifnum\monthcounter=12% 
+                                            \ifnum#1=12% 
                                                 December%
                                             \fi%
                                         \fi%
@@ -120,54 +127,78 @@
     \fi%
 \fi%
 }
+\makeatother
 
-\def\findemes{\ifnum\monthcounter=12%
-    \pgfmathtruncatemacro{\monthcounter}{1} \else%
-        \pgfmathtruncatemacro{\monthcounter}{\monthcounter+1}%
-\fi%
+\def\findemes{%
+ \ifnum \monthcounter=12 \pgfmathtruncatemacro{\monthcounter}{1} \else \pgfmathtruncatemacro{\monthcounter}{\monthcounter+1} \fi%
+ \pgfmathtruncatemacro{\nextmonth}{\monthcounter+1}%
+ \pgfmathtruncatemacro{\lastmonth}{\monthcounter-1}1%
+ \ifnum \nextmonth>12 \pgfmathtruncatemacro{\nextmonth}{1} \fi%
+ \ifnum \lastmonth=0 \pgfmathtruncatemacro{\lastmonth}{12} \fi%
 }
 
-\def\nuevapagina{\findemes%
-%\newpage%
+\def\nuevapagina{
+%  \begin{tikzpicture}%
+% % grid
+%         \draw[fill=white, draw=white] (0,20) rectangle (27.9,15.9);%
+%         \draw[fill=white, draw=white] (0,15) rectangle (27.9,15.9);%
+%         \fill[white] (0,20) rectangle (28,16);
+%         \fill[white] (0,15) rectangle (28,16);
+%         \draw[fill=white, draw=white, xstep=4cm, ystep=2.5cm] (0,0) grid (27.9,14.8);%
+%         \draw[fill=white, draw=white, xstep=4cm, ystep=1cm] (0,15) grid (27.9,15.9);%
+%         \draw[fill=white, draw=white] (0,20) rectangle (28,16);%
+%         \fill[white](0,20) rectangle (28.1,16.1);
+%  \end{tikzpicture}
+% \newpage
+}
+
+\newcommand\astrimage[2][]{
+\begin{tikzpicture}%
+% grid
+        \draw[fill opacity=0,fill=\maincolor] (0,20) rectangle (28,16);%
+        \draw[fill opacity=0,fill=\subcolor] (0,15) rectangle (28,16);%
+        \draw[xstep=4cm, ystep=2.5cm] (0,0) grid (28,15);%
+        \draw[xstep=4cm, ystep=1cm] (0,15) grid (28,16);%
+        \draw (0,20) rectangle (28,16);%
+\end{tikzpicture}
+\newpage
 }
 
 \newcommand\mes[2][]{
 \begin{tikzpicture}%
-% Cuadrícula
+% grid
         \draw[fill opacity=1,fill=\maincolor] (0,20) rectangle (28,16);%
         \draw[fill opacity=1,fill=\subcolor] (0,15) rectangle (28,16);%
         \draw[xstep=4cm, ystep=2.5cm] (0,0) grid (28,15);%
         \draw[xstep=4cm, ystep=1cm] (0,15) grid (28,16);%
         \draw (0,20) rectangle (28,16);%
-        \foreach \dia/\posicion in {Monday/2,Tuesday/6,Wednesday/10,Thursday/14,Friday/18,Saturday/22,Sunday/26}{%
+        \foreach \dia/\posicion in {Sunday/2, Monday/6,Tuesday/10,Wednesday/14,Thursday/18,Friday/22,Saturday/26}{%
         \node (\dia) at (\posicion,15.5) {\dia};%
         }%
-% Calendario mes anterior       
-        \node (titulocalanterior) at (2.75,19.5) {\Month};%
-        \calendar (calanterior) [dates=\Year-12-01 to \Year-12-last,%
+% Month before        
+        \node (titulocalanterior) at (2.75,19.5) {\Month{\lastmonth}};%
+        \calendar (calanterior) [dates=\Year-\lastmonth-01 to \Year-\lastmonth-last,%
             day xshift=1em,%
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
             week list,%
             day letter headings] at (1.2,18.7);%
 
-        \findemes%
-% CALENDARIO PRINCIPAL
+% calendar
         \listadelunas{#1}%
         \listadefestivos{#2}%
-        \calendar[dates=\Year-\monthcounter-1 to \Year-\monthcounter-last,%
+        \calendar[dates=\Year-\monthcounter-01 to \Year-\monthcounter-last,%
             week list,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
             if = {(Sunday) [\colorfestivos]},%
             ] at (4,14.3) \festivos \lunas;%
 
-        \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{} \Year};%
+        \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
 
-        \findemes%
-% Calendario mes siguiente
-        \node (titulocalsiguiente) at (25.05,19.5) {\Month};%
-        \calendar (calsiguiente) [dates=\Year-\monthcounter-1 to \Year-\monthcounter-last,%
+% month following
+        \node (titulocalsiguiente) at (25.05,19.5) {\Month{\nextmonth}};%
+        \calendar (calsiguiente) [dates=\Year-\nextmonth-01 to \Year-\nextmonth-last,%
             day xshift=1em,%
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
@@ -175,6 +206,7 @@
             day letter headings] at (23.5,18.7);%
 \end{tikzpicture}
 \nuevapagina
+\findemes
 }
 
 \newcommand\January[2][]{
@@ -185,41 +217,40 @@
         \draw[xstep=4cm, ystep=2.5cm] (0,0) grid (28,15);%
         \draw[xstep=4cm, ystep=1cm] (0,15) grid (28,16);%
         \draw (0,20) rectangle (28,16);%
-        \foreach \dia/\posicion in {Monday/2,Tuesday/6,Wednesday/10,Thursday/14,Friday/18,Saturday/22,Sunday/26}{%
+        \foreach \dia/\posicion in {Sunday/2, Monday/6,Tuesday/10,Wednesday/14,Thursday/18,Friday/22,Saturday/26}{%
         \node (\dia) at (\posicion,15.5) {\dia};%
         }%
 % Calendario mes anterior       
-        \node (titulocalanterior) at (2.75,19.5) {\Month};%
-        \calendar (calanterior) [dates=\oldYear-12-01 to \oldYear-12-last,%
+        \node (titulocalanterior) at (2.75,19.5) {\Month{\lastmonth} \oldYear};%
+        \calendar (calanterior) [dates=\oldYear-\lastmonth-01 to \oldYear-\lastmonth-last,%
             day xshift=1em,%
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
             week list,%
             day letter headings] at (1.2,18.7);%
 
-        \findemes%
 % CALENDARIO PRINCIPAL
         \listadelunas{#1}%
         \listadefestivos{#2}%
-        \calendar[dates=\Year-\monthcounter-1 to \Year-\monthcounter-last,%
+        \calendar[dates=\Year-01-01 to \Year-01-last,%
             week list,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
             if = {(Sunday) [\colorfestivos]},%
             ] at (4,14.3) \festivos \lunas;%
 
-        \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{} \Year};%
+        \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
 
-        \findemes%
 % Calendario mes siguiente
-        \node (titulocalsiguiente) at (25.05,19.5) {\Month};%
-        \calendar (calsiguiente) [dates=\Year-\monthcounter-1 to \Year-\monthcounter-last,%
+        \node (titulocalsiguiente) at (25.05,19.5) {\Month{\nextmonth}};%
+        \calendar (calsiguiente) [dates=\Year-\nextmonth-01 to \Year-\nextmonth-last,%
             day xshift=1em,%
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
             week list,%
             day letter headings] at (23.5,18.7);%
 \end{tikzpicture}
+\findemes
 \nuevapagina
 }
 
@@ -237,40 +268,39 @@
 \newcommand\December[2][]{
 \begin{tikzpicture}%
 % Cuadrícula
+        
         \draw[fill opacity=1,fill=\maincolor] (0,20) rectangle (28,16);%
         \draw[fill opacity=1,fill=\subcolor] (0,15) rectangle (28,16);%
         \draw[xstep=4cm, ystep=2.5cm] (0,0) grid (28,15);%
         \draw[xstep=4cm, ystep=1cm] (0,15) grid (28,16);%
         \draw (0,20) rectangle (28,16);%
-        \foreach \dia/\posicion in {Monday/2,Tuesday/6,Wednesday/10,Jueves/14,Friday/18,Saturday/22,Sunday/26}{%
+        \foreach \dia/\posicion in {Sunday/2, Monday/6,Tuesday/10,Wednesday/14,Thursday/18,Friday/22,Saturday/26}{%
         \node (\dia) at (\posicion,15.5) {\dia};%
         }%
 % Calendario mes anterior       
-        \node (titulocalanterior) at (2.75,19.5) {\Month};%
-        \calendar (calanterior) [dates=\Year-12-01 to \Year-12-last,%
+        \node (titulocalanterior) at (2.75,19.5) {\Month{\lastmonth}};%
+        \calendar (calanterior) [dates=\Year-\lastmonth-01 to \Year-\lastmonth-last,%
             day xshift=1em,%
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
             week list,%
             day letter headings] at (1.2,18.7);%
 
-        \findemes%
 % CALENDARIO PRINCIPAL
         \listadelunas{#1}%
         \listadefestivos{#2}%
-        \calendar[dates=\Year-\monthcounter-1 to \Year-\monthcounter-last,%
+        \calendar[dates=\Year-12-01 to \Year-12-last,%
             week list,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
             if = {(Sunday) [\colorfestivos]},%
             ] at (4,14.3) \festivos \lunas;%
 
-        \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{} de \Year};%
-
-        \findemes%
+        \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
+        
 % Calendario mes siguiente
-        \node (titulocalsiguiente) at (25.05,19.5) {\Month};%
-        \calendar (calsiguiente) [dates=\newYear-\monthcounter-1 to \newYear-\monthcounter-last,%
+        \node (titulocalsiguiente) at (25.05,19.5) {\Month{\nextmonth}};%
+        \calendar (calsiguiente) [dates=\newYear-\nextmonth-01 to \newYear-\nextmonth-last,%
             day xshift=1em,%
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
@@ -279,3 +309,4 @@
 \end{tikzpicture}
 \nuevapagina
 }
+
