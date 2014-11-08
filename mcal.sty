@@ -176,30 +176,14 @@ tikz@lib@cal@width=7
 }
 
 \def\nuevapagina{
- \begin{tikzpicture}%
-% grid
-        \draw[fill=white, draw=white] (0,20) rectangle (27.9,15.9);%
-        \draw[fill=white, draw=white] (0,15) rectangle (27.9,15.9);%
-        \fill[white] (0,20) rectangle (28,16);
-        \fill[white] (0,15) rectangle (28,16);
-        \draw[fill=white, draw=white, xstep=4cm, ystep=2.5cm] (0,0) grid (27.9,14.8);%
-        \draw[fill=white, draw=white, xstep=4cm, ystep=1cm] (0,15) grid (27.9,15.9);%
-        \draw[fill=white, draw=white] (0,20) rectangle (28,16);%
-        \fill[white](0,20) rectangle (28.1,16.1);
- \end{tikzpicture}
  \newpage
 }
 
-\newcommand\astrimage[2][]{
+\newcommand\astrimage[1]{
 \begin{tikzpicture}%
 % grid
-        \draw[fill opacity=0,fill=\maincolor] (0,20) rectangle (28,16);%
-        \draw[fill opacity=0,fill=\subcolor] (0,15) rectangle (28,16);%
-        \draw[xstep=4cm, ystep=2.5cm] (0,0) grid (28,15);%
-        \draw[xstep=4cm, ystep=1cm] (0,15) grid (28,16);%
-        \draw (0,20) rectangle (28,16);%
-        \node[inner sep=0pt] (russell) at (0,0)
-    {\includegraphics[width=.25\textwidth]{bertrand_russell.jpg}};
+        \node[inner sep=0pt] (russell) at (15,0)
+    {\includegraphics[width=\paperheight, height=\paperwidth]{#1}};
 \end{tikzpicture}
 \newpage
 }
