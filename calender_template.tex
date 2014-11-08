@@ -5,6 +5,10 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{mathabx}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{wasysym}
 
 % MCAL -------------------------------
 \usepackage{mcal}
@@ -15,7 +19,7 @@
 \colordelosfestivos{red}% The color of holidays.
 \remaincolor{white}% The color under the top rectangle (where the title and the previous and next calendar are)
 \resubcolor{white}% The color under the names of the week
-\mooncounter=20% To set the first moon of the year (0,1,2,3)
+\mooncounter=-1% To set the first moon of the year -1 full moon, 2 new moon
 \astrimage{M87_Super-Volcano.jpg}
 \January[5,20]{1,2}% The months [moon days and holidays]
 \February[8,22]{1,2,3,7,9,25}
@@ -29,5 +33,4 @@
 \October[1,23,30]{}
 \November[14,29]{}
 \December[14,29]{16,24,25,26,31}
-
 \end{document}

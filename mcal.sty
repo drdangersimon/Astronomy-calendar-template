@@ -1,6 +1,6 @@
 \RequirePackage{tikz}
 \usetikzlibrary{calc, calendar}
-\RequirePackage{xcolor}
+\RequirePackage{xcolor, wasysym}
 
 %make sundays begining of the week
 \tikzstyle{week list sunday}=[
@@ -86,6 +86,7 @@ tikz@lib@cal@width=7
 
 %astronomical events
 
+%moon counter
 \newcount\mooncounter
 \def\moonreset{\global\mooncounter=-1\relax}
 \moonreset
@@ -93,16 +94,17 @@ tikz@lib@cal@width=7
 \def\moon{%
     \global\advance\mooncounter by 1\relax%
     \ifcase\mooncounter $\newmoon$%
-        \or $\rightmoon$%
-        \or $\fullmoon$%
-        \or $\leftmoon$\global\mooncounter=-1\relax%
+        \or             $\rightmoon$%
+        \or             $\fullmoon$%
+        \or             $\leftmoon$\global\mooncounter=-1\relax%
     \fi%
 }
 
-\newcommand*{\listadelunas}[1]{%
-    \def\lunas{}%
-    \foreach \l in {#1} {%
-        \xappto\lunas{if (day of month = \l) [day text=\noexpand\moon\%d-]}
+\newcommand*{\listofmoons}[1]{%
+    \edef\listmoons{#1}%
+    \def\moons{}%
+    \foreach \l in \listmoons {%
+        \xappto\moons{if (day of month =  \l) [day text=\noexpand\moon\%d-]}
     }%
 }
 
@@ -182,7 +184,7 @@ tikz@lib@cal@width=7
 \newcommand\astrimage[1]{
 \begin{tikzpicture}%
 % grid
-        \node[inner sep=0pt] (russell) at (15,0)
+     \node[inner sep=0pt] (russell) at (15,0)
     {\includegraphics[width=\paperheight, height=\paperwidth]{#1}};
 \end{tikzpicture}
 \newpage
@@ -209,14 +211,13 @@ tikz@lib@cal@width=7
             day letter headings] at (1.2,18.7);%
 
 % calendar
-        \listadelunas{#1}%
+        \listofmoons{#1}%
         \listadefestivos{#2}%
         \calendar[dates=\Year-\monthcounter-01 to \Year-\monthcounter-last,%
 	    week list sunday,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
-            if = {(Sunday) [\colorfestivos]},%
-            ] at (4,14.3) \festivos \lunas;%
+            ] at (4,14.3) \festivos \moons;%
 
         \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
 
@@ -254,14 +255,13 @@ tikz@lib@cal@width=7
             day letter headings] at (1.2,18.7);%
 
 % CALENDARIO PRINCIPAL
-        \listadelunas{#1}%
+        \listofmoons{#1}%
         \listadefestivos{#2}%
         \calendar[dates=\Year-01-01 to \Year-01-last,%
             week list sunday,%
             day xshift = 4cm,%
-            day yshift = 2.5cm,%
-            if = {(Sunday) [\colorfestivos]},%
-            ] at (4,14.3) \festivos \lunas;%
+            day yshift = 2.5cm,
+            ] at (4,14.3) \festivos \moons;%
 
         \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
 
@@ -311,14 +311,13 @@ tikz@lib@cal@width=7
             day letter headings] at (1.2,18.7);%
 
 % CALENDARIO PRINCIPAL
-        \listadelunas{#1}%
+        \listofmoons{#1}%
         \listadefestivos{#2}%
         \calendar[dates=\Year-12-01 to \Year-12-last,%
             week list sunday,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
-            if = {(Sunday) [\colorfestivos]},%
-            ] at (4,14.3) \festivos \lunas;%
+            ] at (4,14.3) \festivos \moons;%
 
         \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
         
