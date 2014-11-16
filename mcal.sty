@@ -2,6 +2,17 @@
 \usetikzlibrary{calc, calendar}
 \RequirePackage{xcolor, wasysym}
 
+
+\pgfkeys{/tikz/day code =
+  {
+    \node at (-0.6,0.3) {\tikzdaytext};
+    \node (upper left) at (-\cellwidth,\cellheight)
+    [below right,align=left,text width=\cellwidth-\pgflinewidth,
+    font=\tiny,black] {\showtext};
+    
+  }
+}
+
 %make sundays begining of the week
 \tikzstyle{week list sunday}=[
 % Note that we cannot extend from week list,
@@ -78,11 +89,12 @@ tikz@lib@cal@width=7
 \RequirePackage{etoolbox}
 \RequirePackage{mathabx}
 
-\newcommand*{\listadefestivos}[1]{%
+\newcommand*{\listadefestivos}[2]{%
     \def\festivos{}%
-    \foreach \f in {#1} {%
-        \xappto\festivos{if (day of month = \f) [\colorfestivos]}}%
+    \foreach \f/\n in {#1} {%
+        \xappto\festivos{if (day of month = \f) [observance=\n]}}%
 }
+
 
 %astronomical events
 
@@ -190,7 +202,7 @@ tikz@lib@cal@width=7
 \newpage
 }
 
-\newcommand\mes[2][]{
+\newcommand\mes[3][]{
 \begin{tikzpicture}%
 % grid
         \draw[fill opacity=1,fill=\maincolor] (0,20) rectangle (28,16);%
@@ -212,7 +224,7 @@ tikz@lib@cal@width=7
 
 % calendar
         \listofmoons{#1}%
-        \listadefestivos{#2}%
+        \listadefestivos{#2}{#3}%
         \calendar[dates=\Year-\monthcounter-01 to \Year-\monthcounter-last,%
 	    week list sunday,%
             day xshift = 4cm,%
@@ -256,7 +268,7 @@ tikz@lib@cal@width=7
 
 % CALENDARIO PRINCIPAL
         \listofmoons{#1}%
-        \listadefestivos{#2}%
+        \listadefestivos{#2}{#2}%
         \calendar[dates=\Year-01-01 to \Year-01-last,%
             week list sunday,%
             day xshift = 4cm,%
@@ -272,7 +284,7 @@ tikz@lib@cal@width=7
             day yshift = 1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
-            day letter headings] at (23.5,18.7);%
+            day letter headings] at (23.5,18.3);%
 \end{tikzpicture}
 \findemes
 \nuevapagina
@@ -312,7 +324,7 @@ tikz@lib@cal@width=7
 
 % CALENDARIO PRINCIPAL
         \listofmoons{#1}%
-        \listadefestivos{#2}%
+        \listadefestivos{#2}{#2}%
         \calendar[dates=\Year-12-01 to \Year-12-last,%
             week list sunday,%
             day xshift = 4cm,%
