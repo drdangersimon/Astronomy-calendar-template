@@ -2,14 +2,10 @@
 \usetikzlibrary{calc, calendar}
 \RequirePackage{xcolor, wasysym}
 
-
+%original day code settings
 \pgfkeys{/tikz/day code =
   {
-    \node at (-0.6,0.3) {\tikzdaytext};
-    \node (upper left) at (-\cellwidth,\cellheight)
-    [below right,align=left,text width=\cellwidth-\pgflinewidth,
-    font=\tiny,black] {\showtext};
-    
+    \node at (-0.4,0) [align=right] {\tikzdaytext};    
   }
 }
 
@@ -63,7 +59,7 @@ tikz@lib@cal@width=7
 \def\colorfestivos{red}
 \def\maincolor{white}
 \def\subcolor{white}
-
+\def\holiday{}
 \def\remaincolor#1{%
 \let\maincolor\relax%
 \def\maincolor{#1}%
@@ -92,7 +88,8 @@ tikz@lib@cal@width=7
 \newcommand*{\listadefestivos}[2]{%
     \def\festivos{}%
     \foreach \f/\n in {#1} {%
-        \xappto\festivos{if (day of month = \f) [observance=\n]}}%
+        \xappto\festivos{if (day of month = \f) {\node [draw] {hi};}}}%
+
 }
 
 
@@ -116,14 +113,14 @@ tikz@lib@cal@width=7
     \edef\listmoons{#1}%
     \def\moons{}%
     \foreach \l in \listmoons {%
-        \xappto\moons{if (day of month =  \l) [day text=\noexpand\moon\%d-]}
+        \xappto\moons{if (day of month =  \l) [day text=\%d0 \noexpand\moon]}
     }%
 }
 
 \makeatletter%
 \tikzoption{day headings}{\tikzstyle{day heading}=[#1]}
 \tikzstyle{day heading}=[]
-\tikzstyle{day letter headings}=[
+\tikzstyle{day letter headings}=[%
     execute before day scope={ \ifdate{day of month=1}{%
         \pgfmathsetlength{\pgf@ya}{\tikz@lib@cal@yshift}%
         \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
@@ -216,28 +213,29 @@ tikz@lib@cal@width=7
 % Month before        
         \node (titulocalanterior) at (2.75,19.5) {\Month{\lastmonth}};%
         \calendar (calanterior) [dates=\Year-\lastmonth-01 to \Year-\lastmonth-last,%
-            day xshift=1em,%
-            day yshift = 1em-1ex,%
+            day xshift= 1.1em,%
+            day yshift = 1.1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
-            day letter headings] at (1.2,18.7);%
+            day letter headings] at (1.1,18.7);%
 
 % calendar
         \listofmoons{#1}%
-        \listadefestivos{#2}{#3}%
+        \listadefestivos{#2}{#2}%
         \calendar[dates=\Year-\monthcounter-01 to \Year-\monthcounter-last,%
 	    week list sunday,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
-            ] at (4,14.3) \festivos \moons;%
+            day text=\%d0,%
+            ] at (1,14.5) \festivos \moons;%
 
         \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
 
 % month following
         \node (titulocalsiguiente) at (25.05,19.5) {\Month{\nextmonth}};%
         \calendar (calsiguiente) [dates=\Year-\nextmonth-01 to \Year-\nextmonth-last,%
-            day xshift=1em,%
-            day yshift = 1em-1ex,%
+            day xshift=1.1em,%
+            day yshift = 1.1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
             day letter headings] at (23.5,18.7);%
@@ -260,8 +258,8 @@ tikz@lib@cal@width=7
 % Calendario mes anterior       
         \node (titulocalanterior) at (2.75,19.5) {\Month{\lastmonth} \oldYear};%
         \calendar (calanterior) [dates=\oldYear-\lastmonth-01 to \oldYear-\lastmonth-last,%
-            day xshift=1em,%
-            day yshift = 1em-1ex,%
+            day xshift=1.1em,%
+            day yshift = 1.1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
             day letter headings] at (1.2,18.7);%
@@ -273,18 +271,19 @@ tikz@lib@cal@width=7
             week list sunday,%
             day xshift = 4cm,%
             day yshift = 2.5cm,
-            ] at (4,14.3) \festivos \moons;%
+            day text= \%d0,%
+            ] at (1,14.5) \festivos \moons;%
 
         \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
 
 % Calendario mes siguiente
         \node (titulocalsiguiente) at (25.05,19.5) {\Month{\nextmonth}};%
         \calendar (calsiguiente) [dates=\Year-\nextmonth-01 to \Year-\nextmonth-last,%
-            day xshift=1em,%
-            day yshift = 1em-1ex,%
+            day xshift=1.1em,%
+            day yshift = 1.1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
-            day letter headings] at (23.5,18.3);%
+            day letter headings] at (23.5,18.7);%
 \end{tikzpicture}
 \findemes
 \nuevapagina
@@ -316,8 +315,8 @@ tikz@lib@cal@width=7
 % Calendario mes anterior       
         \node (titulocalanterior) at (2.75,19.5) {\Month{\lastmonth}};%
         \calendar (calanterior) [dates=\Year-\lastmonth-01 to \Year-\lastmonth-last,%
-            day xshift=1em,%
-            day yshift = 1em-1ex,%
+            day xshift=1.1em,%
+            day yshift = 1.1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
             day letter headings] at (1.2,18.7);%
@@ -329,15 +328,16 @@ tikz@lib@cal@width=7
             week list sunday,%
             day xshift = 4cm,%
             day yshift = 2.5cm,%
-            ] at (4,14.3) \festivos \moons;%
+            day text=\%d0,%
+            ] at (1,14.5) \festivos \moons;%
 
         \node[scale=2] (Mtitle) at (14,18) {\Huge \Month{\monthcounter} \Year};%
         
 % Calendario mes siguiente
         \node (titulocalsiguiente) at (25.05,19.5) {\Month{\nextmonth}};%
         \calendar (calsiguiente) [dates=\newYear-\nextmonth-01 to \newYear-\nextmonth-last,%
-            day xshift=1em,%
-            day yshift = 1em-1ex,%
+            day xshift=1.1em,%
+            day yshift = 1.1em-1ex,%
             day text=\normalsize \%d-,%
             week list sunday,%
             day letter headings] at (23.5,18.7);%
