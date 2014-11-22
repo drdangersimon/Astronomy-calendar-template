@@ -1,39 +1,557 @@
-\documentclass[border=4.9mm, multi={tikzpicture}]{standalone}
-%\usepackage[hmargin=2cm,bmargin=3cm,tmargin=4.5cm,centering,a4paper]{geometry}
+% Birthday calendar
+% Author: Hakon Malmedal
+\documentclass[fontsize=20pt]{scrartcl}
+\usepackage[norsk]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage{lmodern}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[hmargin={1cm,1cm},vmargin={1cm,2cm}, a4paper,landscape]{geometry}
+\pagestyle{empty}
 \usepackage{graphicx}
 \usepackage{tikz}
-\usepackage{mathabx}
-\usepackage{tikz}
-\usepackage{etoolbox}
+\usetikzlibrary{calendar,fit}
+\usepackage{expl3,xparse}
 \usepackage{wasysym}
-\usepackage{xparse}
-\usepackage{expl3}
 
-% MCAL -------------------------------
-\usepackage{mcal}
-% MCAL -------------------------------
+%% Adapted from http://tex.stackexchange.com/a/10199/4771
+\makeatletter%
+\tikzoption{day headings}{\tikzstyle{day heading}=[#1]}
+\tikzstyle{day heading}=[]
+\tikzstyle{day letter headings}=[
+    execute before day scope={ \ifdate{day of month=1}{%
+      \pgfmathsetlength{\pgf@ya}{\tikz@lib@cal@yshift}%
+      \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
+      \pgftransformyshift{-\pgf@ya}
+      \foreach \d/\l in {0/Sunday,1/Monday,2/Tuesday,3/Wesnday,%
+                         4/Thursday,5/Friday,6/Saturday} {
+        \pgf@xa=\d\pgf@xa%
+        \pgftransformxshift{\pgf@xa-\cellwidth/2}%
+        \pgftransformyshift{\pgf@ya}%
+        \node[above=-0.5ex,day heading]{\l};%
+      }
+    }{}%
+  }%
+]
+\makeatother%
+%% End
+%make sundays begining of the week
+\tikzstyle{week list sunday}=[
+% Note that we cannot extend from week list,
+% the execute before day scope is cumulative
+execute before day scope={%
+   \ifdate{day of month=1}{\ifdate{equals=\pgfcalendarbeginiso}{}{
+   % On first of month, except when first date in calendar.
+   \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@month@yshift}%
+   \pgftransformyshift{-\pgf@y}
+   }}{}%
+},
+execute at begin day scope={%
+% Because for TikZ Monday is 0 and Sunday is 6,
+% we can't directly use \pgfcalendercurrentweekday,
+% but instead we define \c@pgf@counta (basically) as:
+% (\pgfcalendercurrentweekday + 1) % 7
+\pgfmathsetlength\pgf@x{\tikz@lib@cal@xshift}%
+\ifnum\pgfcalendarcurrentweekday=6
+\c@pgf@counta=0
+\else
+\c@pgf@counta=\pgfcalendarcurrentweekday
+\advance\c@pgf@counta by 1
+\fi
+\pgf@x=\c@pgf@counta\pgf@x
+% Shift to the right position for the day.
+\pgftransformxshift{\pgf@x}
+},
+execute after day scope={
+% Week is done, shift to the next line.
+\ifdate{Saturday}{
+\pgfmathsetlength{\pgf@y}{\tikz@lib@cal@yshift}%
+\pgftransformyshift{-\pgf@y}
+}{}%
+},
+% This should be defined, glancing from the source code.
+tikz@lib@cal@width=7
+]
 
-\begin{document}% To set up \sffamily, \bfseries…
-\thisyear{2015}% The year the calendar is about.
-\colordelosfestivos{red}% The color of holidays.
-\remaincolor{white}% The color under the top rectangle (where the title and the previous and next calendar are)
-\resubcolor{white}% The color under the names of the week
-\mooncounter=1% To set the first moon of the year 2 full moon, -1 new moon
-\astrimage{M87_Super-Volcano.jpg}
+
+\makeatletter
+\tikzstyle{month label above centered}=[%
+  execute before day scope={%
+    \ifdate{day of month=1}{%
+      {
+        \pgfmathsetlength{\pgf@xa}{\tikz@lib@cal@xshift}%
+        \pgf@xb=\tikz@lib@cal@width\pgf@xa%
+        \advance\pgf@xb by-\pgf@xa%
+        \pgf@xb=.5\pgf@xb%
+        \pgftransformxshift{\pgf@xb}%
+        \pgftransformxshift{-\cellwidth/2}%
+        \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@yshift}%
+        \pgftransformyshift{0.333\pgf@y}
+        \tikzmonthcode%
+      }
+    }{}},
+  every month/.append style={anchor=base}
+]
+\makeatother
+%% End
+
+\ExplSyntaxOn
+
+%% Adapted from http://tex.stackexchange.com/a/56214/4771
+%%
+% first of all we define the user level commands
+\NewDocumentCommand{\addtext}{ m }{ \bdaycal_input_add:n { #1 } }
+\NewDocumentCommand{\addtextyear}{ mm }{ \bdaycal_input_add_y:nn { #1 } { #2 } }
+\NewDocumentCommand{\showtext}{ }{ \bdaycal_output_direct: }
+
+% allocate variable:
+% a sequence for global storage of the inputs;
+\seq_new:N \g_bdaycal_input_seq
+
+% store globally an input in the sequence
+\cs_new:Npn \bdaycal_input_add:n #1
+ {
+  \seq_gput_right:Nn \g_bdaycal_input_seq { #1 }
+ }
+
+\cs_new:Npn \bdaycal_input_add_y:nn #1 #2
+ {
+  \seq_gput_right:Nn \g_bdaycal_input_seq { #1 ~ ( \int_to_arabic:n
+    { \pgfcalendarifdateyear - #2 } ) }
+ }
+
+% how to output in direct order; we simply do a mapping function calling
+% \bdaycal_print:n after incrementing the counter
+\cs_new_protected:Npn \bdaycal_output_direct:
+ {
+  \seq_map_inline:Nn \g_bdaycal_input_seq
+   {
+    \bdaycal_print:n { ##1 }
+   }
+  \seq_gclear:N \g_bdaycal_input_seq
+ }
+
+% the printing macro; change here for adapting to your wishes
+\cs_new:Npn \bdaycal_print:n #1
+ {
+  #1 \par
+ }
+%% End
+
+%% Knuth's AoCP, vol 1, 2nd ed, pp 155--156
+\int_new:N \l_easter_Y_int
+\int_new:N \l_easter_G_int
+\int_new:N \l_easter_C_int
+\int_new:N \l_easter_X_int
+\int_new:N \l_easter_Z_int
+\int_new:N \l_easter_D_int
+\int_new:N \l_easter_E_int
+\int_new:N \l_easter_N_int
+\int_new:N \l_easter_M_int
+\int_new:N \l_easter_julian_day_int
+
+\cs_new:Nn \easter_sunday:n {
+
+  \int_set:Nn \l_easter_Y_int { #1 }
+
+  \int_set:Nn \l_easter_G_int {
+    \int_mod:nn { \l_easter_Y_int } { 19 } + 1
+  }
+
+  \int_set:Nn \l_easter_C_int {
+    \int_div_truncate:nn { \l_easter_Y_int } { 100 } + 1
+  }
+
+  \int_set:Nn \l_easter_X_int {
+    \int_div_truncate:nn { 3 * \l_easter_C_int } { 4 } - 12
+  }
+
+  \int_set:Nn \l_easter_Z_int {
+    \int_div_truncate:nn { 8 * \l_easter_C_int + 5 } { 25 } - 5
+  }
+
+  \int_set:Nn \l_easter_D_int {
+    \int_div_truncate:nn { 5 * \l_easter_Y_int } { 4 } - \l_easter_X_int - 10
+  }
+
+  \int_set:Nn \l_easter_E_int {
+    \int_mod:nn { 11 * \l_easter_G_int + 20 + \l_easter_Z_int
+      - \l_easter_X_int } { 30 }
+  }
+
+  % \int_mod:nn behaves strangely.
+  \int_compare:nNnT { \l_easter_E_int } < { 0 }
+  {
+    \int_add:Nn \l_easter_E_int { 30 }
+  }
+
+  \int_compare:nNnTF { \l_easter_E_int } = { 25 }
+  { % true
+    \int_compare:nNnT { \l_easter_G_int } > { 11 }
+    { % true
+      \int_incr:N \l_easter_E_int
+    }
+  }
+  { % false
+    \int_compare:nNnT { \l_easter_E_int } = { 24 }
+    { % true
+      \int_incr:N \l_easter_E_int
+    }
+  }
+
+  \int_set:Nn \l_easter_N_int { 44 - \l_easter_E_int }
+
+  \int_compare:nNnT { \l_easter_N_int } < { 21 }
+  { % true
+    \int_add:Nn \l_easter_N_int { 30 }
+  }
+
+  \int_add:Nn \l_easter_N_int {
+    7 - \int_mod:nn { \l_easter_D_int + \l_easter_N_int } { 7 }
+  }
+
+  \int_compare:nNnTF { \l_easter_N_int } > { 31 }
+  { % true
+    \int_sub:Nn \l_easter_N_int { 31 }
+    \int_set:Nn \l_easter_M_int { 4 } % April
+  }
+  { % false
+    \int_set:Nn \l_easter_M_int { 3 } % March
+  }
+
+  \pgfcalendardatetojulian { \l_easter_Y_int -
+     \l_easter_M_int - \l_easter_N_int
+  } { \l_easter_julian_day_int }
+
+}
+
+\pgfkeys{/pgf/calendar/Easter/.default = 0}
+\pgfkeys{/pgf/calendar/Easter/.code =
+  {
+    \easter_sunday:n { \pgfcalendarifdateyear }
+    \int_compare:nNnT { \pgfcalendarifdatejulian }
+    =  {\l_easter_julian_day_int + #1}
+    { \pgfcalendarmatchestrue }
+  }
+}
+
+\int_new:N \l_advent_Y_int
+\int_new:N \l_advent_xmas_julian_day_int
+\int_new:N \l_advent_xmas_week_day_int
+\int_new:N \l_advent_julian_day_int
+
+\cs_new:Nn \advent_sunday:n {
+
+  \int_set:Nn \l_advent_Y_int { #1 }
+
+  \pgfcalendardatetojulian { \l_advent_Y_int - 12 - 25 } {
+    \l_advent_xmas_julian_day_int }
+
+  \pgfcalendarjuliantoweekday { \l_advent_xmas_julian_day_int } {
+    \l_advent_xmas_week_day_int }
+
+  \int_set:Nn \l_advent_julian_day_int {
+    \l_advent_xmas_julian_day_int - \l_advent_xmas_week_day_int - 22 }
+
+}
+
+\pgfkeys{/pgf/calendar/Advent/.default = 0}
+\pgfkeys{/pgf/calendar/Advent/.code =
+  {
+    \advent_sunday:n { \pgfcalendarifdateyear }
+    \int_compare:nNnT { \pgfcalendarifdatejulian }
+    =  {\l_advent_julian_day_int + #1}
+    { \pgfcalendarmatchestrue }
+  }
+}
+
+%% http://www.tondering.dk/claus/cal/week.php#calcweekno
+\int_new:N \l_week_number_year_int
+\int_new:N \l_week_number_month_int
+\int_new:N \l_week_number_day_int
+\int_new:N \l_week_number_a_int
+\int_new:N \l_week_number_b_int
+\int_new:N \l_week_number_c_int
+\int_new:N \l_week_number_s_int
+\int_new:N \l_week_number_e_int
+\int_new:N \l_week_number_f_int
+\int_new:N \l_week_number_g_int
+\int_new:N \l_week_number_d_int
+\int_new:N \l_week_number_n_int
+\int_new:N \l_week_number_W_int
+
+\cs_new:Nn \week_number:nnn {
+
+  \int_set:Nn \l_week_number_year_int { #1 }
+  \int_set:Nn \l_week_number_month_int { #2 }
+  \int_set:Nn \l_week_number_day_int { #3 }
+
+  \int_compare:nNnTF { \l_week_number_month_int } < { 3 } % jan or feb
+  { % true
+
+    \int_set:Nn \l_week_number_a_int { \l_week_number_year_int - 1 }
+
+    \int_set:Nn \l_week_number_b_int {
+      \int_div_truncate:nn { \l_week_number_a_int } { 4 }
+      - \int_div_truncate:nn { \l_week_number_a_int } { 100 }
+      + \int_div_truncate:nn { \l_week_number_a_int } { 400 }
+    }
+
+    \int_set:Nn \l_week_number_c_int {
+      \int_div_truncate:nn { \l_week_number_a_int - 1 } { 4 }
+      - \int_div_truncate:nn { \l_week_number_a_int - 1 } { 100 }
+      + \int_div_truncate:nn { \l_week_number_a_int - 1 } { 400 }
+    }
+
+    \int_set:Nn \l_week_number_s_int {
+      \l_week_number_b_int - \l_week_number_c_int }
+
+    \int_zero:N \l_week_number_e_int
+
+    \int_set:Nn \l_week_number_f_int { \l_week_number_day_int - 1
+      + 31 * ( \l_week_number_month_int - 1 ) }
+
+  } % end true
+  { % false
+
+    \int_set_eq:NN \l_week_number_a_int \l_week_number_year_int
+
+    \int_set:Nn \l_week_number_b_int {
+      \int_div_truncate:nn { \l_week_number_a_int } { 4 }
+      - \int_div_truncate:nn { \l_week_number_a_int } { 100 }
+      + \int_div_truncate:nn { \l_week_number_a_int } { 400 }
+    }
+
+    \int_set:Nn \l_week_number_c_int {
+      \int_div_truncate:nn { \l_week_number_a_int - 1 } { 4 }
+      - \int_div_truncate:nn { \l_week_number_a_int - 1 } { 100 }
+      + \int_div_truncate:nn { \l_week_number_a_int - 1 } { 400 }
+    }
+
+    \int_set:Nn \l_week_number_s_int {
+      \l_week_number_b_int - \l_week_number_c_int }
+
+    \int_set:Nn \l_week_number_e_int { \l_week_number_s_int + 1 }
+
+    \int_set:Nn \l_week_number_f_int { \l_week_number_day_int
+      + \int_div_truncate:nn {
+        153 * ( \l_week_number_month_int - 3 ) + 2 } { 5 }
+      + 58 + \l_week_number_s_int }
+
+  } % end false
+
+  \int_set:Nn \l_week_number_g_int {
+    \int_mod:nn { \l_week_number_a_int + \l_week_number_b_int } { 7 }  }
+
+  \int_set:Nn \l_week_number_d_int {
+    \int_mod:nn { \l_week_number_f_int + \l_week_number_g_int
+      - \l_week_number_e_int } { 7 }  }
+
+  \int_set:Nn \l_week_number_n_int {
+    \l_week_number_f_int + 3 - \l_week_number_d_int }
+
+  \int_compare:nNnTF { \l_week_number_n_int } < { 0 }
+  { %true
+
+    \int_set:Nn \l_week_number_W_int { 53
+      - \int_div_truncate:nn { \l_week_number_g_int
+        - \l_week_number_s_int } { 5 } }
+
+  } % end true
+  { % false
+
+    \int_compare:nNnTF { \l_week_number_n_int } > { 364
+      + \l_week_number_s_int }
+    { % true
+
+      \int_set:Nn \l_week_number_W_int { 1 }
+
+    } % end true
+    { % false
+
+      \int_set:Nn \l_week_number_W_int { \int_div_truncate:nn {
+          \l_week_number_n_int } { 7 } + 1 }
+
+    } % end false
+
+  } % end false
+
+}
+
+\definecolor{roed}{rgb}{0.937254901961,0.16862745098,0.176470588235}
+\definecolor{blaa}{rgb}{0,0.156862745098,0.407843137255}
+
+\newsavebox{\flagNO}
+\savebox{\flagNO}{
+\begin{tikzpicture}
+  \fill[roed] rectangle (6pt,6pt);
+  \fill[roed,yshift=10pt] rectangle (6pt,6pt);
+  \fill[roed,xshift=10pt] rectangle (12pt,6pt);
+  \fill[roed,xshift=10pt,yshift=10pt] rectangle (12pt,6pt);
+  \fill[blaa,yshift=7pt] rectangle (22pt,2pt);
+  \fill[blaa,xshift=7pt] rectangle (2pt,16pt);
+\end{tikzpicture}
+}
+
+
+\ExplSyntaxOff
+
+\pgfkeys{/tikz/flag-flying day/.code =
+  {
+    \draw (-\cellwidth,0) node [above right,font=\Huge]
+    {\resizebox{!}{0.8ex}{\usebox{$\newmoon$}}};
+  }
+}
+
+\pgfkeys{/tikz/observance/.code =
+  {
+    \addtext{#1}
+  }
+}
+
+\pgfkeys{/tikz/anniversary/.code 2 args=\addtextyear{#1}{#2}}
+
+\pgfkeys{/tikz/day code =
+  {
+    \node (lower right) at (0,0) [above left,font=\Huge] {\tikzdaytext};
+    \node (upper left) at (-\cellwidth,\cellheight)
+    [below right,align=left,text width=\cellwidth-\pgflinewidth,
+    font=\tiny,black] {\showtext};
+    \node (lower left) at (-\cellwidth,0) {};
+    \node[rounded corners, draw,
+          fit=(lower right) (upper left) (lower left),
+          inner sep=1mm] {};
+  }
+}
+
+\pgfkeys{/tikz/inner sep = 0pt}
+
+\pgfkeys{/tikz/day xshift=\cellwidth+2mm+2mm}
+
+\pgfkeys{/tikz/day yshift=\cellheight+2mm+2mm}
+
+\newlength{\cellheight}
+\setlength{\cellheight}{25mm}
+\newlength{\cellwidth}
+\setlength{\cellwidth}{35mm}
+
+\begin{document}
+
 \centering
-\January[5]{1/t,2/tt}% The months [moon days], [holiday dates], [holiday names], [astronmical phenomena]
-%\February[8,22]{1,2,3,7,9,25}
-% \March[9,23]{21}{}
-% \April[7,22]{3,4,5,6,27}{3,4,5,6,27}
-% \May[6,21]{1}{1}
-% \June[5,20]{15,16}{15,16}
-% \July[7,14,21,28]{18}{18}
-% \August[2,18]{9}{9}
-% \September[1,16]{24}{25}
-% \October[1,23,30]{}{}
-% \November[14,29]{}{}
-% \December[14,29]{16,24,25,26,31}
+\begin{tikzpicture}%
+\centering
+    \node[inner sep=1pt] (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{M87_Super-Volcano.jpg}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-01-01 to 2015-01-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings] at (1,14.5)
+            if (day of month = 1) [observance=New Years]
+            if (day of month = 20) [observance= New Moon $\newmoon$];
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-02-01 to 2015-02-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-03-01 to 2015-03-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-04-01 to 2015-04-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-05-01 to 2015-05-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-06-01 to 2015-06-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-07-01 to 2015-07-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-08-01 to 2015-08-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-09-01 to 2015-09-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-10-01 to 2015-10-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-11-01 to 2015-11-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-12-01 to 2015-12-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\Huge \%mt \%y0},
+            day headings={font=\footnotesize},
+            day letter headings];
+\end{tikzpicture}
+
 \end{document}
