@@ -1,7 +1,6 @@
 % Birthday calendar
 % Author: Hakon Malmedal
 \documentclass[fontsize=20pt]{scrartcl}
-\usepackage[norsk]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -12,6 +11,9 @@
 \usetikzlibrary{calendar,fit}
 \usepackage{expl3,xparse}
 \usepackage{wasysym}
+\usepackage{ifsym}
+\usepackage{afterpage}
+\usepackage{xcolor}
 
 %% Adapted from http://tex.stackexchange.com/a/10199/4771
 \makeatletter%
@@ -22,7 +24,7 @@
       \pgfmathsetlength{\pgf@ya}{\tikz@lib@cal@yshift}%
       \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
       \pgftransformyshift{-\pgf@ya}
-      \foreach \d/\l in {0/Sunday,1/Monday,2/Tuesday,3/Wesnday,%
+      \foreach \d/\l in {0/Sunday,1/Monday,2/Tuesday,3/Wednesday,%
                          4/Thursday,5/Friday,6/Saturday} {
         \pgf@xa=\d\pgf@xa%
         \pgftransformxshift{\pgf@xa-\cellwidth/2}%
@@ -408,14 +410,14 @@ tikz@lib@cal@width=7
   }
 }
 
-\pgfkeys{/tikz/anniversary/.code 2 args=\addtextyear{#1}{#2}}
+\pgfkeys{/tikz/anniversary/.code 2 args=\addtext{#1}}
 
 \pgfkeys{/tikz/day code =
   {
     \node (lower right) at (0,0) [above left,font=\Huge] {\tikzdaytext};
     \node (upper left) at (-\cellwidth,\cellheight)
     [below right,align=left,text width=\cellwidth-\pgflinewidth,
-    font=\tiny,black] {\showtext};
+    font=\footnotesize] {\showtext};
     \node (lower left) at (-\cellwidth,0) {};
     \node[rounded corners, draw,
           fit=(lower right) (upper left) (lower left),
@@ -436,11 +438,10 @@ tikz@lib@cal@width=7
 
 \begin{document}
 
-\centering
 \begin{tikzpicture}%
 \centering
-    \node[inner sep=1pt] (russell) at (0,0)
-    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{M87_Super-Volcano.jpg}};
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{Comet_lemon-RGB.jpg}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
@@ -450,10 +451,18 @@ tikz@lib@cal@width=7
             month text=\textsc{\Huge \%mt \%y0},
             day headings={font=\footnotesize},
             day letter headings] at (1,14.5)
-            if (day of month = 1) [observance=New Years]
-            if (day of month = 20) [observance= New Moon $\newmoon$];
+            if (day of month = 1) [observance= \color{red} New Years Day]
+            if (day of month = 5) [observance= $\fullmoon$ \color{blue} Full Moon ]
+            if (day of month = 13) [observance= $\rightmoon$ \color{blue} Last Quarter Moon ]
+            if (day of month = 20) [observance= $\newmoon$ \color{blue} New Moon ]
+            if (day of month = 27) [observance= $\leftmoon$ \color{blue} First Quarter Moon ];
 \end{tikzpicture}
 
+\begin{tikzpicture}%
+\centering
+    \node[inner sep=1pt] (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{M42-RG.jpg}};
+\end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-02-01 to 2015-02-last,
@@ -461,7 +470,18 @@ tikz@lib@cal@width=7
             month label above centered,
             month text=\textsc{\Huge \%mt \%y0},
             day headings={font=\footnotesize},
-            day letter headings];
+            day letter headings]
+            if (day of month = 7) [observance= \color{blue} Alpha Centaurid Meteor Shower]
+            if (day of month = 4) [observance= $\fullmoon$ \color{blue} Full Moon]
+            if (day of month = 12) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
+            if (day of month = 19) [observance= $\newmoon$ \color{blue} New Moon]
+            if (day of month = 25) [observance= $\leftmoon$ \color{blue} First Quarter Moon];
+\end{tikzpicture}
+
+\begin{tikzpicture}%
+\centering
+    \node[inner sep=1pt] (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{NGC_1763-LRGB.jpg}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
@@ -470,88 +490,95 @@ tikz@lib@cal@width=7
             month label above centered,
             month text=\textsc{\Huge \%mt \%y0},
             day headings={font=\footnotesize},
-            day letter headings];
+            day letter headings]
+            if (day of month = 21) [observance= \color{red} Human Rights Day]
+            if (day of month = 5) [observance= $\fullmoon$ \color{blue} Full Moon]
+            if (day of month = 13) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
+            if (day of month = 20) [observance= $\newmoon$ \color{blue} New Moon]
+            if (day of month = 27) [observance= $\leftmoon$ \color{blue} First Quarter Moon];
+            %if (day of month = 13)  [observance= \color{blue} Gamma Normid Meteor Shower];
 \end{tikzpicture}
 
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-04-01 to 2015-04-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-05-01 to 2015-05-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-06-01 to 2015-06-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-07-01 to 2015-07-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-08-01 to 2015-08-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-09-01 to 2015-09-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-10-01 to 2015-10-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-11-01 to 2015-11-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
-
-\begin{tikzpicture}[thick]
-  \calendar[dates=2015-12-01 to 2015-12-last,
-            week list,
-            month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings];
-\end{tikzpicture}
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-04-01 to 2015-04-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings]
+%             if (day of month = 21) [observance=Human Rights Day];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-05-01 to 2015-05-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-06-01 to 2015-06-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-07-01 to 2015-07-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-08-01 to 2015-08-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-09-01 to 2015-09-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-10-01 to 2015-10-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-11-01 to 2015-11-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
+% 
+% \begin{tikzpicture}[thick]
+%   \calendar[dates=2015-12-01 to 2015-12-last,
+%             week list,
+%             month label above centered,
+%             month text=\textsc{\Huge \%mt \%y0},
+%             day headings={font=\footnotesize},
+%             day letter headings];
+% \end{tikzpicture}
 
 \end{document}
