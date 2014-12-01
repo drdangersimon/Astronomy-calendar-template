@@ -1,18 +1,22 @@
 % Birthday calendar
 % Author: Hakon Malmedal
-\documentclass[fontsize=20pt]{scrartcl}
+\documentclass[fontsize=10pt]{scrartcl}
+\usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[utf8]{inputenc}
+\usepackage{tikz}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[hmargin={1cm,1cm},vmargin={1cm,2cm}, a4paper,landscape]{geometry}
+\usepackage{Ubuntu}
+\usepackage[hmargin={1cm,1cm},vmargin={1cm,1cm}, a4paper,landscape]{geometry}
 \pagestyle{empty}
 \usepackage{graphicx}
-\usepackage{tikz}
-\usetikzlibrary{calendar,fit}
+\usepackage{gensymb}
+\usetikzlibrary{calendar,fit,shapes,arrows,shadings}
 \usepackage{expl3,xparse}
 \usepackage{wasysym}
 \usepackage{afterpage}
-\usepackage{xcolor}
+\usepackage[active]{preview}
+
+
 
 %% Adapted from http://tex.stackexchange.com/a/10199/4771
 \makeatletter%
@@ -35,6 +39,8 @@
 ]
 \makeatother%
 %% End
+
+
 %make sundays begining of the week
 \tikzstyle{week list sunday}=[
 % Note that we cannot extend from week list,
@@ -86,12 +92,12 @@ tikz@lib@cal@width=7
         \pgftransformxshift{\pgf@xb}%
         \pgftransformxshift{-\cellwidth/2}%
         \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@yshift}%
-        \pgftransformyshift{0.333\pgf@y}
+        \pgftransformyshift{0.4\pgf@y}
         \tikzmonthcode%
       }
     }{}},
   every month/.append style={anchor=base}
-]
+  ]
 \makeatother
 %% End
 
@@ -378,18 +384,25 @@ tikz@lib@cal@width=7
 
 }
 
-\definecolor{roed}{rgb}{0.937254901961,0.16862745098,0.176470588235}
-\definecolor{blaa}{rgb}{0,0.156862745098,0.407843137255}
+% SA Flag
+\definecolor{c0F794E}{RGB}{15,121,78}
+\definecolor{cDB3A37}{RGB}{219,58,55}
+\definecolor{c052991}{RGB}{5,41,145}
+\definecolor{cFDFDFD}{RGB}{253,253,253}
+\definecolor{cFAB330}{RGB}{250,179,48}
 
 \newsavebox{\flagNO}
 \savebox{\flagNO}{
-\begin{tikzpicture}
-  \fill[roed] rectangle (6pt,6pt);
-  \fill[roed,yshift=10pt] rectangle (6pt,6pt);
-  \fill[roed,xshift=10pt] rectangle (12pt,6pt);
-  \fill[roed,xshift=10pt,yshift=10pt] rectangle (12pt,6pt);
-  \fill[blaa,yshift=7pt] rectangle (22pt,2pt);
-  \fill[blaa,xshift=7pt] rectangle (2pt,16pt);
+\begin{tikzpicture}[y=0.80pt,x=0.80pt,yscale=-1, inner sep=0pt, outer sep=0pt]
+\path[fill=c0F794E] (620.0000,1261.0000) .. controls (584.9300,1261.0000) and (549.8590,1260.9600) .. (514.7890,1261.0710) .. controls (511.7930,1261.0810) and (510.8830,1260.5500) .. (510.9080,1257.3090) .. controls (511.0810,1234.2070) and (511.0000,1211.1030) .. (511.0000,1188.0000) .. controls (512.9340,1188.3750) and (514.0260,1186.8360) .. (515.3380,1185.9620) .. controls (626.3610,1111.9920) and (737.3500,1037.9710) .. (848.4110,964.0600) .. controls (852.2580,961.5000) and (852.2620,960.5040) .. (848.4120,957.9420) .. controls (737.3500,884.0300) and (626.3610,810.0090) .. (515.3390,736.0390) .. controls (514.0270,735.1650) and (512.9350,733.6250) .. (511.0000,734.0000) .. controls (511.0000,709.6670) and (511.0000,685.3330) .. (511.0000,661.0000) .. controls (545.3170,660.9830) and (579.6340,661.0120) .. (613.9510,660.8800) .. controls (617.6330,660.8660) and (620.5620,661.8700) .. (623.6040,663.9010) .. controls (740.7020,742.0540) and (857.8570,820.1220) .. (974.9620,898.2640) .. controls (977.8620,900.1990) and (980.6920,901.0670) .. (984.1930,901.0650) .. controls (1126.4620,900.9900) and (1268.7310,901.0000) .. (1411.0000,901.0000) .. controls (1411.0000,941.0000) and (1411.0000,981.0000) .. (1411.0000,1021.0000) .. controls (1268.8530,1020.9990) and (1126.7060,1021.0130) .. (984.5590,1020.9230) .. controls (980.6830,1020.9210) and (977.5990,1021.9600) .. (974.4250,1024.0780) .. controls (857.5670,1102.0710) and (740.6630,1179.9930) .. (623.7840,1257.9540) .. controls (622.4490,1258.8440) and (620.7350,1259.3380) .. (620.0000,1261.0000) -- cycle;
+\path[fill=cDB3A37] (1411.0000,661.0000) .. controls (1411.0000,727.6670) and (1411.0000,794.3330) .. (1411.0000,861.0000) .. controls (1272.7100,860.9990) and (1134.4190,860.9900) .. (996.1290,861.0510) .. controls (992.8230,861.0520) and (990.1210,860.2870) .. (987.3400,858.4300) .. controls (890.4220,793.7290) and (793.4530,729.1040) .. (696.4940,664.4630) .. controls (695.1890,663.5930) and (693.9330,662.6490) .. (691.5370,660.9450) .. controls (694.6980,660.9450) and (696.4640,660.9450) .. (698.2290,660.9450) .. controls (933.8210,660.9250) and (1169.4140,660.9040) .. (1405.0060,660.8890) .. controls (1407.0050,660.8890) and (1409.0020,660.9620) .. (1411.0000,661.0000) -- cycle;
+\path[fill=c052991] (1411.0000,1061.0000) .. controls (1411.0000,1126.1670) and (1410.9630,1191.3330) .. (1411.0960,1256.5000) .. controls (1411.1040,1260.2500) and (1410.2500,1261.0950) .. (1406.5000,1261.0940) .. controls (1168.3330,1260.9900) and (930.1670,1261.0000) .. (692.0000,1261.0000) .. controls (692.9980,1260.1710) and (693.9300,1259.2430) .. (695.0040,1258.5270) .. controls (792.7420,1193.3500) and (890.4970,1128.2000) .. (988.1980,1062.9680) .. controls (990.7690,1061.2510) and (993.3070,1060.9790) .. (996.1670,1060.9800) .. controls (1134.4450,1061.0040) and (1272.7220,1061.0010) .. (1411.0000,1061.0000) -- cycle;
+\path[fill=cFDFDFD] (692.6670,660.0000);
+\path[fill=cFDFDFD] (691.5370,660.9450) -- (696.4940,664.4630) -- (987.3400,858.4300) -- (996.1290,861.0510) -- (1411.0000,861.0000) -- (1411.0000,901.0000) -- (984.1930,901.0650) -- (974.9620,898.2640) -- (623.6040,663.9010) -- (613.9510,660.8800) -- (691.5370,660.9450) -- cycle;
+\path[fill=cFDFDFD] (1411.0000,1061.0000) .. controls (1272.7220,1061.0010) and (1134.4450,1061.0040) .. (996.1670,1060.9800) .. controls (993.3070,1060.9800) and (990.7690,1061.2510) .. (988.1980,1062.9680) .. controls (890.4970,1128.2000) and (792.7420,1193.3500) .. (695.0040,1258.5270) .. controls (693.9310,1259.2430) and (692.9990,1260.1710) .. (692.0000,1261.0000) .. controls (668.0000,1261.0000) and (644.0000,1261.0000) .. (620.0000,1261.0000) .. controls (620.7350,1259.3380) and (622.4490,1258.8440) .. (623.7830,1257.9540) .. controls (740.6620,1179.9930) and (857.5660,1102.0710) .. (974.4240,1024.0780) .. controls (977.5980,1021.9600) and (980.6820,1020.9200) .. (984.5580,1020.9230) .. controls (1126.7050,1021.0130) and (1268.8520,1020.9990) .. (1410.9990,1021.0000) .. controls (1411.0000,1034.3330) and (1411.0000,1047.6670) .. (1411.0000,1061.0000) -- cycle;
+\path[fill=cFAB330] (511.0000,1140.0000) .. controls (512.9300,1140.3290) and (514.0050,1138.7730) .. (515.3130,1137.9010) .. controls (602.3260,1079.9440) and (689.2980,1021.9250) .. (776.3510,964.0270) .. controls (780.1820,961.4790) and (780.1820,960.5190) .. (776.3510,957.9720) .. controls (689.2980,900.0750) and (602.3260,842.0560) .. (515.3130,784.0980) .. controls (514.0050,783.2270) and (512.9300,781.6700) .. (511.0000,781.9990) .. controls (511.0000,765.9990) and (511.0000,749.9990) .. (511.0000,733.9990) .. controls (512.9350,733.6240) and (514.0270,735.1640) .. (515.3390,736.0380) .. controls (626.3620,810.0080) and (737.3510,884.0290) .. (848.4120,957.9400) .. controls (852.2620,960.5020) and (852.2580,961.4980) .. (848.4110,964.0580) .. controls (737.3490,1037.9690) and (626.3600,1111.9900) .. (515.3380,1185.9600) .. controls (514.0260,1186.8340) and (512.9350,1188.3730) .. (511.0000,1187.9980) .. controls (511.0000,1172.0000) and (511.0000,1156.0000) .. (511.0000,1140.0000) -- cycle;
+\path[fill=black] (510.8681,780.3712) -- (510.8681,1142.9228) -- (782.1479,960.3793) -- cycle;
+
 \end{tikzpicture}
 }
 
@@ -399,7 +412,7 @@ tikz@lib@cal@width=7
 \pgfkeys{/tikz/flag-flying day/.code =
   {
     \draw (-\cellwidth,0) node [above right,font=\Huge]
-    {\resizebox{!}{0.8ex}{\usebox{$\newmoon$}}};
+    {\resizebox{!}{1.0ex}{\usebox{\flagNO}}};
   }
 }
 
@@ -413,7 +426,7 @@ tikz@lib@cal@width=7
 
 \pgfkeys{/tikz/day code =
   {
-    \node (lower right) at (0,0) [above left,font=\Huge] {\tikzdaytext};
+    \node (lower right) at (0,0) [above left,font=\Large] {\tikzdaytext};
     \node (upper left) at (-\cellwidth,\cellheight)
     [below right,align=left,text width=\cellwidth-\pgflinewidth,
     font=\footnotesize] {\showtext};
@@ -435,176 +448,527 @@ tikz@lib@cal@width=7
 \newlength{\cellwidth}
 \setlength{\cellwidth}{35mm}
 
+
 \begin{document}
+
+% --------
+% JANUARY
+% --------
 
 \begin{tikzpicture}%
 \centering
     \node (russell) at (0,0)
-    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{Astronomy_Images/Comet_lemmon.jpg}};
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=1]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
-\begin{tikzpicture}[thick]
+
+
+\begin{tikzpicture}[thick],
   \calendar[dates=2015-01-01 to 2015-01-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
-            day letter headings] at (1,14.5)
-            if (day of month = 1) [observance= \color{red} New Years Day]
-            if (day of month = 5) [observance= $\fullmoon$ \color{blue} Full Moon ]
-            if (day of month = 13) [observance= $\rightmoon$ \color{blue} Last Quarter Moon ]
-            if (day of month = 20) [observance= $\newmoon$ \color{blue} New Moon ]
-            if (day of month = 27) [observance= $\leftmoon$ \color{blue} First Quarter Moon ];
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
+            day letter headings]
+            % moon phases
+            if (day of month = 5) [observance= $\fullmoon$ \color{Gray} Full moon]
+            if (day of month = 13) [observance= $\rightmoon$ \color{Gray} Last quarter moon] %last quarter moon
+            if (day of month = 20) [observance= $\newmoon$ \color{Gray} New moon]
+            if (day of month = 27) [observance= $\leftmoon$ \color{Gray} First quarter moon] %first quarter moon
+            % public holidays
+            if (day of month = 1) [observance= \color{BrickRed} New Years Day]  
+            % astro stuff  
+            if (day of month = 2) [observance= \color{Gray} Aldebaran near Moon]
+            if (day of month = 4) [observance= \color{Gray} \emph{Earth at aphelion}]
+            if (day of month = 6) [observance= \color{Gray} Moon near Beehive (M44)]
+            if (day of month = 7) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 8) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 13) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 16) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 19) [observance= \color{Gray} $\alpha$ Crucid meteor shower max]
+            if (day of month = 20) [observance= \color{Gray} Mars near Neptune]
+            if (day of month = 21) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 22) [observance= \color{Gray} Venus \& Mars near Moon]
+            if (day of month = 22) [observance= \color{Gray} Venus?Moon 7.5$\degree$ at noon]
+            if (day of month = 23) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 25) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 29) [observance= \color{Gray} Aldebaran near Moon];
 \end{tikzpicture}
+
+
+% --------
+% FEBRUARY
+% --------
 
 \begin{tikzpicture}%
 \centering
     \node[inner sep=1pt] (russell) at (0,0)
-    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{Astronomy_Images/M42-RG.jpg}};
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=2]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-02-01 to 2015-02-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
             day letter headings]
-            if (day of month = 7) [observance= \color{blue} Alpha Centaurid Meteor Shower]
-            if (day of month = 4) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 12) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
-            if (day of month = 19) [observance= $\newmoon$ \color{blue} New Moon]
-            if (day of month = 25) [observance= $\leftmoon$ \color{blue} First Quarter Moon];
+            % moon phases
+            if (day of month = 4) [observance= $\fullmoon$ \color{Gray}]
+            if (day of month = 12) [observance= $\rightmoon$ \color{Gray}] %last quarter moon
+            if (day of month = 19) [observance= $\newmoon$ \color{Gray}]
+            if (day of month = 25) [observance= $\leftmoon$ \color{Gray}] %first quarter moon
+            % astro stuff  
+            if (day of month = 1) [observance= \color{Gray} Venus near Neptune]
+            if (day of month = 3) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 4) [observance= \color{Gray} Jupiter \& Regulus near Moon]
+            if (day of month = 7) [observance= \color{Gray} alpha Centaurid meteor shower max]
+            if (day of month = 9) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 13) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 17) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 21) [observance= \color{Gray} Venus-Moon 7.0$\degree$ at noon]
+            if (day of month = 21) [observance= \color{Gray} Venus \& Mars near Moon]
+            if (day of month = 22) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 26) [observance= \color{Gray} Aldebaran near Moon];
 \end{tikzpicture}
+
+
+% --------
+% MARCH
+% --------
 
 \begin{tikzpicture}%
 \centering
-    \node[inner sep=1pt] (russell) at (0,0)
-    {\includegraphics[width=.9\paperwidth, height=.9\paperheight]{Astronomy_Images/NGC_1763-LRGB.jpg}};
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=3]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-03-01 to 2015-03-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
             day letter headings]
-            if (day of month = 21) [observance= \color{red} Human Rights Day]
-            if (day of month = 5) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 13) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
-            if (day of month = 20) [observance= $\newmoon$ \color{blue} New Moon]
-            if (day of month = 27) [observance= $\leftmoon$ \color{blue} First Quarter Moon]
-            if (day of month = 13)  [observance= \color{blue} Gamma Normid Meteor Shower];
+            % moon phases
+            if (day of month = 5) [observance= $\fullmoon$ \color{Gray} Smallest Full Moon for 2015]
+            if (day of month = 13) [observance= $\rightmoon$ \color{Gray}] %last quarter moon
+            if (day of month = 20) [observance= $\newmoon$ \color{Gray}]
+            if (day of month = 27) [observance= $\leftmoon$ \color{Gray}] %first quarter moon
+            % public holidays
+            if (day of month = 21) [observance= \color{BrickRed} Human Rights Day]
+            if (day of month = 21) [flag-flying day]
+            % astro stuff  
+            if (day of month = 2) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 3) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 4) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 4) [observance= \color{Gray} Venus near Uranus]
+            if (day of month = 9) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 11) [observance= \color{Gray} Mars near Uranus]
+            if (day of month = 12) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 13) [observance= \color{Gray} $\gamma$ Normid meteor shower max]
+            if (day of month = 18) [observance= \color{Gray} Mercury near Neptune]
+            if (day of month = 18) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 21) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 22) [observance= \color{Gray} Venus near Moon]
+            if (day of month = 22) [observance= \color{Gray} Venus-Moon 5.9$\degree$ at noon]
+            if (day of month = 22) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 25) [observance= \color{Gray} Aldebaran near Moon]
+            if (day of month = 28) [observance= \color{Gray} \emph{Earth Hour}]
+            if (day of month = 30) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 30) [observance= \color{Gray} Regulus near Moon];
+\end{tikzpicture}
+
+
+% --------
+% APRIL
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=4]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-04-01 to 2015-04-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
             day letter headings]
-            if (day of month = 3) [observance= Good Friday]
-            if (day of month = 6) [observance= Family Day]
-            if (day of month = 21) [observance= Freedom Day]
-            if (day of month = 4) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 12) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
-            if (day of month = 18) [observance= $\newmoon$ \color{blue} New Moon]
-            if (day of month = 26) [observance= $\leftmoon$ \color{blue} First Quarter Moon]
-            if (day of month = 6)  [observance= \color{blue} Delta Pavonid meteor shower];
+            % moon phases
+            if (day of month = 4) [observance= $\fullmoon$ \color{Gray}]
+            if (day of month = 12) [observance= $\rightmoon$ \color{Gray}] %last quarter moon
+            if (day of month = 18) [observance= $\newmoon$ \color{Gray}]
+            if (day of month = 26) [observance= $\leftmoon$ \color{Gray}] %first quarter moon
+            % public holidays
+            if (day of month = 3) [observance= \color{BrickRed} Good Friday]
+            if (day of month = 6) [observance= \color{BrickRed} Family Day]
+            if (day of month = 27) [observance= \color{BrickRed} Freedom Day]
+            if (day of month = 27) [flag-flying day]
+            % astro stuff  
+            if (day of month = 4) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 6) [observance= \color{Gray} $\delta$ Pavonid meteor shower max]
+            if (day of month = 8) [observance= \color{Gray} Mercury near Uranus]
+            if (day of month = 8) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 12) [observance= \color{Gray} \emph{Yuri's night}]
+            if (day of month = 18) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 19) [observance= \color{Gray} Mercury \& Mars near Moon]
+            if (day of month = 21) [observance= \color{Gray} Venus-Moon 7.3$\degree$ at noon]
+            if (day of month = 21) [observance= \color{Gray} Aldebaran \& Venus near Moon]
+            if (day of month = 22) [observance= \color{Gray} \emph{Earth Day}]
+            if (day of month = 22) [observance= \color{Gray} $\alpha$ Lyrid meteor shower max]
+            if (day of month = 23) [observance= \color{Gray} Mercury near Mars]
+            if (day of month = 23) [observance= \color{Gray} $\pi$ Puppid meteor shower max]
+            if (day of month = 26) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 28) [observance= \color{Gray} Regulus near Moon];
+\end{tikzpicture}
+
+
+% --------
+% MAY
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=5]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-05-01 to 2015-05-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
             day letter headings] 
-            if (day of month = 1) [observance= Workers Day]
-            if (day of month = 4) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 11) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
-            if (day of month = 18) [observance= $\newmoon$ \color{blue} New Moon]
-            if (day of month = 25) [observance= $\leftmoon$ \color{blue} First Quarter Moon]
-            if (day of month = 5)  [observance= \color{blue} Eta Aquariid meteor shower];
+            % moon phases
+            if (day of month = 4) [observance= $\fullmoon$ \color{Gray}]
+            if (day of month = 11) [observance= $\rightmoon$ \color{Gray}] %last quarter moon
+            if (day of month = 18) [observance= $\newmoon$ \color{Gray}]
+            if (day of month = 25) [observance= $\leftmoon$ \color{Gray}] %first quarter moon
+            % public holidays
+            if (day of month = 1) [observance= \color{BrickRed} Worker's Day]
+            if (day of month = 1) [flag-flying day]
+            if (day of month = 10) [observance= \color{RedOrange} Mother's Day]
+            % astro stuff  
+            if (day of month = 2) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 5) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 5) [observance= \color{Gray} $\eta$ Aquariid meteor shower max]
+            if (day of month = 15) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 18) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 19) [observance= \color{Gray} Aldebaran \& Mercury near Moon]
+            if (day of month = 21) [observance= \color{Gray} Venus-Moon 7.8$\degree$ at noon]
+            if (day of month = 21) [observance= \color{Gray} Venus near Moon]
+            if (day of month = 23) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 25) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 26) [observance= \color{Gray} Mars near Aldebaran]
+            if (day of month = 27) [observance= \color{Gray} Mercury near Mars]
+            if (day of month = 28) [observance= \color{Gray} Mercury near Aldebaran]
+            if (day of month = 29) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 30) [observance= \color{Gray} Venus near Pollux];
+\end{tikzpicture}
+
+
+% --------
+% JUNE
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=6]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-06-01 to 2015-06-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
             day letter headings]   
-            if (day of month = 16) [observance= Youth Day]
-            if (day of month = 2) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 9) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
-            if (day of month = 16) [observance= $\newmoon$ \color{blue} New Moon]
-            if (day of month = 24) [observance= $\leftmoon$ \color{blue} First Quarter Moon]
-            if (day of month = 21)  [observance= \color{blue} Winter Solstice];
+            % moon phases
+            if (day of month = 2) [observance= $\fullmoon$ \color{Gray}]
+            if (day of month = 09) [observance= $\rightmoon$ \color{Gray}] %last quarter moon
+            if (day of month = 16) [observance= $\newmoon$ \color{Gray}]
+            if (day of month = 24) [observance= $\leftmoon$ \color{Gray}] %first quarter moon
+            % public holidays
+            if (day of month = 16) [observance= \color{BrickRed} Youth Day]
+            if (day of month = 16) [flag-flying day]
+            if (day of month = 21) [observance= \color{RedOrange} Father's Day]
+            % astro stuff  
+            if (day of month = 1) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 11) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 13) [observance= \color{Gray} $\theta$ Ophiuchid meteor shower max]
+            if (day of month = 15) [observance= \color{Gray} Mercury \& Aldebara near Moon]
+            if (day of month = 16) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 16) [observance= \color{Gray} June Lyrid meteor shower max]
+            if (day of month = 20) [observance= \color{Gray} Venus-Moon 5.1$\degree$ at noon]
+            if (day of month = 20) [observance= \color{Gray} Jupiter \& Venus near Moon]
+            if (day of month = 21) [observance= \color{Gray} \emph{International SUN-day}]
+            if (day of month = 23) [observance= \color{Gray} Mercury near Aldebaran]
+            if (day of month = 25) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 28) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 30) [observance= \color{Gray} Venus near Jupiter];
+\end{tikzpicture}
+
+
+% --------
+% JULY
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=7]{Astronomy_Images/calendar_images.pdf}};
 \end{tikzpicture}
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-07-01 to 2015-07-last,
             week list,
             month label above centered,
-            month text=\textsc{\Huge \%mt \%y0},
-            day headings={font=\footnotesize},
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
             day letter headings]
-            if (day of month = 18) [observance= Nelson Mandela Day]
-            if (day of month = 2) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 8) [observance= $\rightmoon$ \color{blue} Last Quarter Moon]
-            if (day of month = 16) [observance= $\newmoon$ \color{blue} New Moon]
-            if (day of month = 24) [observance= $\leftmoon$ \color{blue} First Quarter Moon]
-            if (day of month = 31) [observance= $\fullmoon$ \color{blue} Full Moon]
-            if (day of month = 29)  [observance= \color{blue} Southern Delta Aquariid meteor shower]
-            if (day of month = 30)  [observance= \color{blue} Alpha Capricornid meteor shower];
+            % moon phases
+            if (day of month = 2) [observance= $\fullmoon$]
+            if (day of month = 8) [observance= $\rightmoon$] %last quarter moon
+            if (day of month = 16) [observance= $\newmoon$]
+            if (day of month = 24) [observance= $\leftmoon$] %first quarter moon
+            if (day of month = 31) [observance= $\fullmoon$]
+            % public holidays
+            if (day of month = 18) [observance= \color{BrickRed} Nelson Mandela Day]  
+            if (day of month = 18) [flag-flying day]
+            % astro stuff  
+            if (day of month = 1) [observance= \color{Gray} Venus near Jupiter]
+            if (day of month = 6) [observance= \color{Gray} \emph{Earth at aphelion}]
+            if (day of month = 9) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 13) [observance= \color{Gray} July Phoenicid meteor shower max]
+            if (day of month = 15) [observance= \color{Gray} Mercury \& Mars near Moon]
+            if (day of month = 19) [observance= \color{Gray} Venus-Moon 4.9$\degree$ at noon]
+            if (day of month = 19) [observance= \color{Gray} Jupiter\, Venus\, Regulus \& Moon grouped together]
+            if (day of month = 23) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 26) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 28) [observance= \color{Gray} Piscis Australid meteor shower max]
+            if (day of month = 29) [observance= \color{Gray} Southern $\delta$ Aquariid meteor shower max]
+            if (day of month = 30) [observance= \color{Gray} $\alpha$ Capricornid meteor shower max]
+            if (day of month = 31) [observance= \color{Gray} Venus near Regulus];
 \end{tikzpicture}
-% 
-% \begin{tikzpicture}[thick]
-%   \calendar[dates=2015-08-01 to 2015-08-last,
-%             week list,
-%             month label above centered,
-%             month text=\textsc{\Huge \%mt \%y0},
-%             day headings={font=\footnotesize},
-%             day letter headings];
-% \end{tikzpicture}
-% 
-% \begin{tikzpicture}[thick]
-%   \calendar[dates=2015-09-01 to 2015-09-last,
-%             week list,
-%             month label above centered,
-%             month text=\textsc{\Huge \%mt \%y0},
-%             day headings={font=\footnotesize},
-%             day letter headings];
-% \end{tikzpicture}
-% 
-% \begin{tikzpicture}[thick]
-%   \calendar[dates=2015-10-01 to 2015-10-last,
-%             week list,
-%             month label above centered,
-%             month text=\textsc{\Huge \%mt \%y0},
-%             day headings={font=\footnotesize},
-%             day letter headings];
-% \end{tikzpicture}
-% 
-% \begin{tikzpicture}[thick]
-%   \calendar[dates=2015-11-01 to 2015-11-last,
-%             week list,
-%             month label above centered,
-%             month text=\textsc{\Huge \%mt \%y0},
-%             day headings={font=\footnotesize},
-%             day letter headings];
-% \end{tikzpicture}
-% 
-% \begin{tikzpicture}[thick]
-%   \calendar[dates=2015-12-01 to 2015-12-last,
-%             week list,
-%             month label above centered,
-%             month text=\textsc{\Huge \%mt \%y0},
-%             day headings={font=\footnotesize},
-%             day letter headings];
-% \end{tikzpicture}
+
+
+% --------
+% AUGUST
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=8]{Astronomy_Images/calendar_images.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-08-01 to 2015-08-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
+            day letter headings]
+            % moon phases
+            if (day of month = 14) [observance= $\newmoon$]
+            if (day of month = 22) [observance= $\leftmoon$] %first quarter moon
+            if (day of month = 7) [observance= $\rightmoon$] %last quarter moon
+            if (day of month = 29) [observance= $\fullmoon$]
+            % public holidays
+            if (day of month = 9) [observance= \color{BrickRed} National Women's Day]
+            if (day of month = 9) [flag-flying day]
+            if (day of month = 10) [observance= \color{BrickRed} National Women's Day observed]  
+            % astro stuff  
+            if (day of month = 5) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 6) [observance= \color{Gray} Jupiter \& Mercury near Regulus]
+            if (day of month = 9) [observance= \color{Gray} Aldebaran near Moon]
+            if (day of month = 11) [observance= \color{Gray} Jupiter near Regulus]
+            if (day of month = 13) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 13) [observance= \color{Gray} Comet 67P Churyumov-Gerasimenko at aphelion]
+            if (day of month = 14) [observance= \color{Gray} Venus near Moon]
+            if (day of month = 15) [observance= \color{Gray} Venus-Moon 10.0$\degree$ at noon]
+            if (day of month = 16) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 19) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 22) [observance= \color{Gray} Saturn near Moon];
+\end{tikzpicture}
+
+
+% --------
+% SEPTEMBER
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=9]{Astronomy_Images/calendar_images.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-09-01 to 2015-09-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
+            day letter headings]
+            % moon phases
+            if (day of month = 13) [observance= $\newmoon$]
+            if (day of month = 21) [observance= $\leftmoon$] %first quarter moon
+            if (day of month = 5) [observance= $\rightmoon$] %last quarter moon
+            if (day of month = 28) [observance= $\fullmoon$ \color{Gray} Largest Full Moon for 2015]
+            % public holidays
+            if (day of month = 24) [observance= \color{BrickRed} Heritage Day]
+            if (day of month = 24) [flag-flying day]
+            % astro stuff  
+            if (day of month = 1) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 5) [observance= \color{Gray} Aldebaran near Moon]
+            if (day of month = 10) [observance= \color{Gray} Venus \& Mars near Moon]
+            if (day of month = 11) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 11) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 13) [observance= \color{MidnightBlue} \textbf{Partial solar eclipse}]
+            if (day of month = 15) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 15) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 18) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 19) [observance= \color{Gray} International Observe the Moon Night]
+            if (day of month = 23) [observance= \color{Gray} Spring Equinox (10h21)]
+            if (day of month = 25) [observance= \color{Gray} Mars near Regulus]
+            if (day of month = 28) [observance= \color{MidnightBlue} \textbf{Total lunar eclipse}]
+            if (day of month = 29) [observance= \color{Gray} Moon occults Uranus];
+\end{tikzpicture}
+
+
+% --------
+% OCTOBER
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=10]{Astronomy_Images/calendar_images.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-10-01 to 2015-10-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
+            day letter headings]
+            % moon phases
+            if (day of month = 13) [observance= $\newmoon$]
+            if (day of month = 20) [observance= $\leftmoon$] %first quarter moon
+            if (day of month = 4) [observance= $\rightmoon$] %last quarter moon
+            if (day of month = 27) [observance= $\fullmoon$]
+            % astro stuff  
+            if (day of month = 2) [observance= \color{Gray} Aldebaran near Moon]
+            if (day of month = 4) [observance= \color{Gray} \emph{World Space Week begins}]
+            if (day of month = 8) [observance= \color{Gray} Venus \& Regulus near Moon]
+            if (day of month = 8) [observance= \color{Gray} Venus-Moon 5.3$\degree$ at noon]
+            if (day of month = 9) [observance= \color{Gray} Mars \& Jupiter near Moon]
+            if (day of month = 11) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 13) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 16) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 18) [observance= \color{Gray} Mars near Jupiter]
+            if (day of month = 18) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 21) [observance= \color{Gray} Orionind meteor shower max]
+            if (day of month = 25) [observance= \color{Gray} Venus near Jupiter]
+            if (day of month = 26) [observance= \color{Gray} Venus near Jupiter]
+            if (day of month = 25) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 29) [observance= \color{Gray} Mercury near Spica]
+            if (day of month = 30) [observance= \color{Gray} Aldebaran near Moon];
+\end{tikzpicture}
+
+
+% --------
+% NOVEMBER
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=11]{Astronomy_Images/calendar_images.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-11-01 to 2015-11-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
+            day letter headings]
+            % moon phases
+            if (day of month = 11) [observance= $\newmoon$]
+            if (day of month = 19) [observance= $\leftmoon$] %first quarter moon
+            if (day of month = 3) [observance= $\rightmoon$] %last quarter moon
+            if (day of month = 26) [observance= $\fullmoon$]
+            % astro stuff  
+            if (day of month = 3) [observance= \color{Gray} Veus near Mars]
+            if (day of month = 5) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 5) [observance= \color{Gray} Southern Taurid meteor shower max]
+            if (day of month = 6) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 7) [observance= \color{Gray} Mars \& Venus near Moon]
+            if (day of month = 7) [observance= \color{Gray} Venus-Moon 2.1$\degree$ at noon]
+            if (day of month = 9) [observance= \color{Gray} Spica near Moon]
+            if (day of month = 11) [observance= \color{Gray} Mercury near Moon]
+            if (day of month = 12) [observance= \color{Gray} Northern Taurid meteor shower max]
+            if (day of month = 13) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 17) [observance= \color{Gray} Leonid meteor shower max]
+            if (day of month = 21) [observance= \color{Gray} $\alpha$ Monocerotid meteor shower max]
+            if (day of month = 22) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 25) [observance= \color{Gray} Mercury near Saturn]
+            if (day of month = 27) [observance= \color{Gray} Mercury near Antares]
+            if (day of month = 30) [observance= \color{Gray} Venus near Spica];
+\end{tikzpicture}
+
+
+% --------
+% DECEMBER
+% --------
+
+\begin{tikzpicture}%
+\centering
+    \node (russell) at (0,0)
+    {\includegraphics[width=.9\paperwidth, height=.9\paperheight, page=12]{Astronomy_Images/calendar_images.pdf}};
+\end{tikzpicture}
+
+\begin{tikzpicture}[thick]
+  \calendar[dates=2015-12-01 to 2015-12-last,
+            week list,
+            month label above centered,
+            month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
+            day headings={font=\large},
+            day letter headings]
+            % moon phases
+            if (day of month = 11) [observance= $\newmoon$]
+            if (day of month = 20) [observance= $\leftmoon$] %first quarter moon
+            %if (day of month = 3) [observance= $\rightmoon$] %last quarter moon
+            if (day of month = 25) [observance= $\fullmoon$ \color{Gray}]
+            % public holidays
+            if (day of month = 16) [observance= \color{BrickRed} Day of Reconciliation]
+            if (day of month = 16) [flag-flying day]
+            if (day of month = 25) [observance= \color{BrickRed} Christmas Day]
+            if (day of month = 26) [observance= \color{BrickRed} Day of Goodwill]
+            % astro stuff  
+            if (day of month = 2) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 4) [observance= \color{Gray} Jupiter near Moon]
+            if (day of month = 6) [observance= \color{Gray} Mars near Moon]
+            if (day of month = 6) [observance= \color{Gray} December Phoenicid meteor shower max]
+            if (day of month = 7) [observance= \color{Gray} Venus \& Spica near Moon]
+            if (day of month = 7) [observance= \color{Gray} Venus-Moon 4.0$\degree$ at noon]
+            if (day of month = 10) [observance= \color{Gray} Saturn near Moon]
+            if (day of month = 14) [observance= \color{Gray} Geminid meteor shower max]
+            if (day of month = 19) [observance= \color{Gray} Mercury near Pluto]
+            if (day of month = 20) [observance= \color{Gray} Uranus near Moon]
+            if (day of month = 22) [observance= \color{Gray} \emph{Summer solstice (06h48)}]
+            if (day of month = 23) [observance= \color{Gray} Aldeberan near Moon]
+            if (day of month = 24) [observance= \color{Gray} Mars near Spica]
+            if (day of month = 29) [observance= \color{Gray} Regulus near Moon]
+            if (day of month = 29) [observance= \color{Gray} Puppid-Velid meteor shower max]
+            if (day of month = 31) [observance= \color{Gray} Jupiter near Moon];
+\end{tikzpicture}
 
 \end{document}
