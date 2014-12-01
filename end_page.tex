@@ -1,0 +1,87 @@
+\documentclass[fontsize=10pt]{scrartcl}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage[T1]{fontenc}
+\usepackage{ubuntu}
+\usepackage[hmargin={1cm,1cm},vmargin={1cm,1cm}, a4paper,landscape]{geometry}
+\pagestyle{empty}
+\usepackage{graphicx}
+\usepackage{mcal}
+\usepackage{gensymb}
+\usetikzlibrary{calendar,fit,shapes,arrows,shadings}
+\usepackage{expl3,xparse}
+\usepackage{wasysym}
+\usepackage{afterpage}
+\usepackage[active]{preview}
+
+
+\makeatletter%
+\tikzoption{day headings}{\tikzstyle{day heading}=[#1]}
+\tikzstyle{day heading}=[]
+\tikzstyle{day letter headings}=[%
+    execute before day scope={ \ifdate{day of month=1}{%
+        \pgfmathsetlength{\pgf@ya}{\tikz@lib@cal@yshift}%
+        \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
+        \pgftransformyshift{-\pgf@ya}
+        \foreach \d/\l in {1/M,2/T,3/W,4/T,5/F,6/S,0/S}{
+            \pgf@xa=\d\pgf@xa%
+            \pgftransformxshift{\pgf@xa}%
+            \pgftransformyshift{\pgf@ya}%
+            \node[every day,day heading]{\l};%
+            } 
+        }{}%
+    }%
+]
+\makeatother
+
+
+
+\begin{document}
+% --------
+% Back page calendar
+% -------
+\begin{center}
+  
+ \begin{tikzpicture}[every calendar/.style={
+ month label above centered,
+ month text={\textit{\%mt}},
+ %holidays are red
+ if={(equals=01-01, 
+      equals=03-21,
+      equals=04-03,
+      equals=04-06,
+      equals=04-27,
+      equals=05-01,
+      equals=06-16,
+      equals=07-18,
+      equals=08-09,
+      equals=08-10,
+      equals=09-24,
+      equals=09-24,
+      equals=12-16,
+      equals=12-25,
+      equals=12-26,
+      equals=12-31) [red]},
+ week list sunday,
+ day headings={font=\small},
+ day letter headings
+}]
+\node [text width=\textwidth,text height=.8cm ,align=center] at (0,8) {\Large 2015};
+\matrix[column sep=5em, row sep=5em] {
+\calendar[dates=2015-01-01 to 2015-01-last]; &
+\calendar[dates=2015-02-01 to 2015-02-last]; &
+\calendar[dates=2015-03-01 to 2015-03-last]; &
+\calendar[dates=2015-04-01 to 2015-04-last]; \\
+\calendar[dates=2015-05-01 to 2015-05-last]; &
+\calendar[dates=2015-06-01 to 2015-06-last]; &
+\calendar[dates=2015-07-01 to 2015-07-last]; &
+\calendar[dates=2015-08-01 to 2015-08-last]; \\
+\calendar[dates=2015-09-01 to 2015-09-last]; &
+\calendar[dates=2015-10-01 to 2015-10-last]; &
+\calendar[dates=2015-11-01 to 2015-11-last]; &
+\calendar[dates=2015-12-01 to 2015-12-last]; \\
+};
+\end{tikzpicture}
+\end{center}
+\end{document}
