@@ -1,14 +1,15 @@
-% Birthday calendar
-% Author: Hakon Malmedal
+% Astronomy calendar UCT
+% Author: Hakon Malmedal, Thuso Simon, Charl Carter
 \documentclass[fontsize=10pt]{scrartcl}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[utf8]{inputenc}
 \usepackage{tikz}
 \usepackage[T1]{fontenc}
-\usepackage{Ubuntu}
+\usepackage{ubuntu}
 \usepackage[hmargin={1cm,1cm},vmargin={1cm,1cm}, a4paper,landscape]{geometry}
 \pagestyle{empty}
 \usepackage{graphicx}
+\usepackage{mcal}
 \usepackage{gensymb}
 \usetikzlibrary{calendar,fit,shapes,arrows,shadings}
 \usepackage{expl3,xparse}
@@ -39,45 +40,6 @@
 ]
 \makeatother%
 %% End
-
-
-%make sundays begining of the week
-\tikzstyle{week list sunday}=[
-% Note that we cannot extend from week list,
-% the execute before day scope is cumulative
-execute before day scope={%
-   \ifdate{day of month=1}{\ifdate{equals=\pgfcalendarbeginiso}{}{
-   % On first of month, except when first date in calendar.
-   \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@month@yshift}%
-   \pgftransformyshift{-\pgf@y}
-   }}{}%
-},
-execute at begin day scope={%
-% Because for TikZ Monday is 0 and Sunday is 6,
-% we can't directly use \pgfcalendercurrentweekday,
-% but instead we define \c@pgf@counta (basically) as:
-% (\pgfcalendercurrentweekday + 1) % 7
-\pgfmathsetlength\pgf@x{\tikz@lib@cal@xshift}%
-\ifnum\pgfcalendarcurrentweekday=6
-\c@pgf@counta=0
-\else
-\c@pgf@counta=\pgfcalendarcurrentweekday
-\advance\c@pgf@counta by 1
-\fi
-\pgf@x=\c@pgf@counta\pgf@x
-% Shift to the right position for the day.
-\pgftransformxshift{\pgf@x}
-},
-execute after day scope={
-% Week is done, shift to the next line.
-\ifdate{Saturday}{
-\pgfmathsetlength{\pgf@y}{\tikz@lib@cal@yshift}%
-\pgftransformyshift{-\pgf@y}
-}{}%
-},
-% This should be defined, glancing from the source code.
-tikz@lib@cal@width=7
-]
 
 
 \makeatletter
@@ -437,6 +399,8 @@ tikz@lib@cal@width=7
   }
 }
 
+
+
 \pgfkeys{/tikz/inner sep = 0pt}
 
 \pgfkeys{/tikz/day xshift=\cellwidth+2mm+2mm}
@@ -465,7 +429,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick],
   \calendar[dates=2015-01-01 to 2015-01-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -508,7 +472,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-02-01 to 2015-02-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -545,7 +509,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-03-01 to 2015-03-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -592,7 +556,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-04-01 to 2015-04-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -638,7 +602,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-05-01 to 2015-05-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -683,7 +647,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-06-01 to 2015-06-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -726,7 +690,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-07-01 to 2015-07-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -769,7 +733,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-08-01 to 2015-08-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -810,7 +774,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-09-01 to 2015-09-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -853,7 +817,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-10-01 to 2015-10-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -895,7 +859,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-11-01 to 2015-11-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -937,7 +901,7 @@ tikz@lib@cal@width=7
 
 \begin{tikzpicture}[thick]
   \calendar[dates=2015-12-01 to 2015-12-last,
-            week list,
+            week list sunday,
             month label above centered,
             month text=\textsc{\fontsize{1.25cm}{1em}\selectfont \%mt \%y0 \\},
             day headings={font=\large},
@@ -952,6 +916,7 @@ tikz@lib@cal@width=7
             if (day of month = 16) [flag-flying day]
             if (day of month = 25) [observance= \color{BrickRed} Christmas Day]
             if (day of month = 26) [observance= \color{BrickRed} Day of Goodwill]
+            if (day of month = 31) [observance= \color{BrickRed} New Years Eve]
             % astro stuff  
             if (day of month = 2) [observance= \color{Gray} Regulus near Moon]
             if (day of month = 4) [observance= \color{Gray} Jupiter near Moon]
@@ -970,5 +935,7 @@ tikz@lib@cal@width=7
             if (day of month = 29) [observance= \color{Gray} Puppid-Velid meteor shower max]
             if (day of month = 31) [observance= \color{Gray} Jupiter near Moon];
 \end{tikzpicture}
+
+
 
 \end{document}
